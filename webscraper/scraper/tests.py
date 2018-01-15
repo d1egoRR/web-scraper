@@ -10,7 +10,6 @@ from rest_framework.status import (HTTP_200_OK,
                                    HTTP_400_BAD_REQUEST)
 from rest_framework.test import APIClient
 
-
 from scraper.models import TwitterProfile
 from scraper.services.TwitterScraperService import TwitterScraperService
 from scraper.views import TwitterScraper
