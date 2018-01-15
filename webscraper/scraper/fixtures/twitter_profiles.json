@@ -1,0 +1,23 @@
+[
+    {
+        "pk": 1,
+        "model": "scraper.twitterprofile",
+        "fields": {
+            "name": "Prueba 1",
+            "screen_name": "prueba",
+            "bio_description": "descripcion corta",
+            "followers": "560",
+            "avatar_url": "http://prueba"
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "scraper.twitterprofile",
+        "fields": {
+            "name": "Prueba 2",
+            "screen_name": "prueba2",
+            "followers": "200"
+        }
+    }
+]
