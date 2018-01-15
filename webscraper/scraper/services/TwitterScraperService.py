@@ -41,16 +41,19 @@ class TwitterScraperService(object):
 
         return result
 
+    def get_tags(self, section):
+        element = self.parser.get(section, 'element')
+        class_ = self.parser.get(section, 'class')
+        return self.soup.find_all(element, class_=class_)
+
     def error_profile(self):
-        class_error = self.parser.get('class', 'error')
-        div_tags = self.soup.find_all('div', class_=class_error)
-        return len(div_tags) > 0
+        tags = self.get_tags('error')
+        return len(tags) > 0
 
     def get_name(self):
         try:
-            class_fullname = self.parser.get('class', 'fullname')
-            a_tags = self.soup.find_all('a', class_=class_fullname)
-            result = a_tags[0].string.replace('\n', '').strip()
+            tags = self.get_tags('fullname')
+            result = tags[0].string.replace('\n', '').strip()
         except:
             result = None
 
@@ -58,9 +61,8 @@ class TwitterScraperService(object):
 
     def get_bio_description(self):
         try:
-            class_bio = self.parser.get('class', 'bio_description')
-            p_tags = self.soup.find_all('p', class_=class_bio)
-            text = p_tags[0].get_text().strip().replace('\n', '').split(' ')
+            tags = self.get_tags('bio_description')
+            text = tags[0].get_text().strip().replace('\n', '').split(' ')
             text = [t for t in text if t != '']
             result = ' '.join(text)
         except:
@@ -71,11 +73,13 @@ class TwitterScraperService(object):
     def get_followers(self):
         result = None
         try:
-            class_li_followers = self.parser.get('class', 'li_followers')
-            class_span_followers = self.parser.get('class', 'span_followers')
-            li_tags = self.soup.find_all('li', class_=class_li_followers)
+            element1 = self.parser.get('followers', 'element1')
+            class1 = self.parser.get('followers', 'class1')
+            element2 = self.parser.get('followers', 'element2')
+            class2 = self.parser.get('followers', 'class2')
+            li_tags = self.soup.find_all(element1, class_=class1)
             for li in li_tags:
-                span_tags = li.find_all('span', class_=class_span_followers)
+                span_tags = li.find_all(element2, class_=class2)
                 if len(span_tags):
                     result = span_tags[0].string.replace('.', '')
                     break
@@ -86,9 +90,8 @@ class TwitterScraperService(object):
 
     def get_avatar_url(self):
         try:
-            class_avatar = self.parser.get('class', 'img_avatar')
-            img_tags = self.soup.find_all('img', class_=class_avatar)
-            result = img_tags[0]['src']
+            tags = self.get_tags('avatar')
+            result = tags[0]['src']
         except:
             result = None
 
