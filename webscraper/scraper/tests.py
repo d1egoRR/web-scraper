@@ -24,14 +24,14 @@ class TwitterScraperTest(TestCase):
 
     def test_api_get_profile(self):
         client = APIClient()
-        response = client.get('/api/twitter/get_profile/')
+        response = client.get('/api/twitter/1.0/get_profile/')
         result = json.loads(response.content)
         self.assertEqual(HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual('Falta el screen name', result['message'])
 
         # esto se encuentra en la DB
         params = {'screen_name': 'prueba'}
-        response = client.get('/api/twitter/get_profile/', params)
+        response = client.get('/api/twitter/1.0/get_profile/', params)
         result = json.loads(response.content)
         self.assertEqual(HTTP_200_OK, response.status_code)
         self.assertEqual(560, result['followers'])
