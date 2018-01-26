@@ -1,6 +1,6 @@
-# web-scraper
+# twitter-profile-scraper
 
-Código que obtiene datos de <a href='https://twitter.com/' target='_blank'>Twitter</a> a partir de un screen name.<br>
+<!--Código que obtiene datos de <a href='https://twitter.com/' target='_blank'>Twitter</a> a partir de un screen name.<br>
 Los datos obtenidos son: fullname, bio description, total followers y avatar url.<br>
 Se utiliza <a href='https://www.djangoproject.com/'>Django 1.11</a>, junto con las librerías <a href='http://www.django-rest-framework.org/'>django rest framwork</a> y <a href='https://www.crummy.com/software/BeautifulSoup/bs4/doc/' target='_blank'>BeautifulSoup</a> para el scraping.<br><br>
 
@@ -24,4 +24,4 @@ Se utiliza <a href='https://www.djangoproject.com/'>Django 1.11</a>, junto con l
 <br><br>
 En este caso se mostrará el resultado para el screen_name "reactjs"<br><br>
 
-<img src='https://image.ibb.co/eYOxz6/twitter_scraper2.png'>
+<img src='https://image.ibb.co/eYOxz6/twitter_scraper2.png'>-->
