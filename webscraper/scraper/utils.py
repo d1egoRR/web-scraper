@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
-
 from scraper.models import TwitterProfile
 
 
@@ -27,18 +25,16 @@ class DataFormatter(object):
     @staticmethod
     def get_data_404_not_found():
         result = dict(
-            status_code=HTTP_404_NOT_FOUND,
-            message='Profile not found')
+            error='not_found',
+            message='Profile does not exists')
         return result
 
     @classmethod
     def get_format_data(self, data):
-        format_result = []
+        result = []
         for profile in data:
             element = self.get_format_profile(profile)
-            format_result.append(element)
-
-        result = dict(data=format_result, status_code=HTTP_200_OK)
+            result.append(element)
         return result
 
     @staticmethod

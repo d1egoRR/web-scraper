@@ -18,6 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/twitter/1.0/', include('scraper.urls')),
-    url(r'^api/twitter/2.0/', include('scraper2.urls'))
+    url(r'^api/twitter/v1/', include('scraper.urls'))
 ]

@@ -9,7 +9,7 @@ from ConfigParser import SafeConfigParser
 from scraper.models import TwitterProfile
 
 
-class TwitterScraperService(object):
+class TwitterProfileScraper(object):
 
     def __init__(self, screen_name=None):
         self.screen_name = screen_name
@@ -26,73 +26,72 @@ class TwitterScraperService(object):
         else:
             self.soup = None
 
-    def scraping_twitter(self):
+    def get_profile(self):
         if self.soup:
-            if self.error_profile():
+            if self.profile_not_found():
                 result = None
             else:
-                result = TwitterProfile(screen_name=self.screen_name)
-                result.name = self.get_name()
-                result.bio_description = self.get_bio_description()
-                result.followers = self.get_followers()
-                result.avatar_url = self.get_avatar_url()
+                result = self.scrape()
+                result.save()
         else:
             result = None
-
         return result
 
-    def get_tags(self, section):
-        element = self.parser.get(section, 'element')
-        class_ = self.parser.get(section, 'class')
-        return self.soup.find_all(element, class_=class_)
-
-    def error_profile(self):
+    def profile_not_found(self):
         tags = self.get_tags('error')
         return len(tags) > 0
 
-    def get_name(self):
-        try:
-            tags = self.get_tags('fullname')
-            result = tags[0].string.replace('\n', '').strip()
-        except:
-            result = None
+    def scrape(self):
+        result = TwitterProfile()
+        result.screen_name = self.screen_name
+        result.name = self.get_name()
+        result.bio_description = self.get_bio_description()
+        result.followers = self.get_followers()
+        result.avatar_url = self.get_avatar_url()
+        return result
 
+    def get_tags(self, section):
+        tag, class_ = self.get_elements(section)
+        return self.soup.find_all(tag, class_=class_)
+
+    def get_elements(self, section):
+        tag = self.parser.get(section, 'tag')
+        class_ = self.parser.get(section, 'class')
+        return tag, class_
+
+    def get_name(self):
+        tags = self.get_tags('fullname')
+        if len(tags):
+            result = tags[0].string.replace('\n', '').strip()
+        else:
+            result = None
         return result
 
     def get_bio_description(self):
-        try:
-            tags = self.get_tags('bio_description')
+        tags = self.get_tags('bio-description')
+        if len(tags):
             text = tags[0].get_text().strip().replace('\n', '').split(' ')
             text = [t for t in text if t != '']
             result = ' '.join(text)
-        except:
+        else:
             result = None
-
         return result
 
     def get_followers(self):
         result = None
-        try:
-            element1 = self.parser.get('followers', 'element1')
-            class1 = self.parser.get('followers', 'class1')
-            element2 = self.parser.get('followers', 'element2')
-            class2 = self.parser.get('followers', 'class2')
-            li_tags = self.soup.find_all(element1, class_=class1)
-            for li in li_tags:
-                span_tags = li.find_all(element2, class_=class2)
-                if len(span_tags):
-                    result = span_tags[0].string.replace('.', '')
-                    break
-        except:
-            result = None
-
+        tags_li = self.get_tags('followers-li')
+        tag, class_ = self.get_elements('followers-span')
+        for li in tags_li:
+            span_tags = li.find_all(tag, class_=class_)
+            if len(span_tags):
+                result = span_tags[0].string.replace('.', '')
+                break
         return result
 
     def get_avatar_url(self):
-        try:
-            tags = self.get_tags('avatar')
+        tags = self.get_tags('avatar')
+        if len(tags):
             result = tags[0]['src']
-        except:
+        else:
             result = None
-
         return result

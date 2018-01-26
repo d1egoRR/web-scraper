@@ -2,54 +2,32 @@
 from __future__ import unicode_literals
 
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
 
-from scraper.models import TwitterProfile
-from scraper.services.TwitterScraperService import TwitterScraperService
+from scraper.services.TwitterProfileScraper import TwitterProfileScraper
+from scraper.utils import DataFormatter, Profile
 
 
-class TwitterScraper(APIView):
+class TwitterProfileList(APIView):
     def get(self, request):
-        if 'screen_name' not in request.GET:
-            result = {'message': 'Falta el screen name'}
-            status = HTTP_400_BAD_REQUEST
-            return Response(result, status=status)
+        profile_list = Profile.get_list()
+        result = DataFormatter.get_format_data(profile_list)
+        return Response(result)
 
-        screen_name = request.GET.get('screen_name')
 
-        profile = self.get_profile(screen_name)
-        return Response(profile)
-
-    def get_profile(self, screen_name):
-        profile = self.find_in_db(screen_name)
-        if profile:
-            result = self.format_data(profile)
-        else:
-            tss = TwitterScraperService(screen_name)
-            profile = tss.scraping_twitter()
-            if profile:
-                profile.save()
-                result = self.format_data(profile)
+class TwitterProfileDetail(APIView):
+    def get(self, request, screen_name):
+        profile = Profile.get_by_screen_name(screen_name)
+        status_code = None
+        if profile is None:
+            scraper = TwitterProfileScraper(screen_name)
+            profile = scraper.get_profile()
+            if profile is None:
+                result = DataFormatter.get_data_404_not_found()
+                status_code = HTTP_404_NOT_FOUND
             else:
-                result = {'message': 'No existe el perfil'}
-
-        return result
-
-    def find_in_db(self, screen_name):
-        try:
-            profile = TwitterProfile.objects.get(
-                screen_name=screen_name)
-        except TwitterProfile.DoesNotExist:
-            profile = None
-        return profile
-
-    def format_data(self, profile):
-        result = {
-            'screen_name': profile.screen_name,
-            'name': profile.name,
-            'bio_description': profile.bio_description,
-            'followers': profile.followers,
-            'avatar_url': profile.avatar_url,
-        }
-        return result
+                result = DataFormatter.get_format_profile(profile)
+        else:
+            result = DataFormatter.get_format_profile(profile)
+        return Response(result, status=status_code)

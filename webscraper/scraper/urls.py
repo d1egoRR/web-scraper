@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
-from scraper.views import TwitterScraper
+from scraper.views import TwitterProfileDetail, TwitterProfileList
 
 urlpatterns = [
-    url(r'^get_profile/', TwitterScraper.as_view(), name='twittescraper'),
+    url(r'^profiles/$', TwitterProfileList.as_view()),
+    url(r'^profiles/(?P<screen_name>[\w\-]+)/$', TwitterProfileDetail.as_view()),
 ]
