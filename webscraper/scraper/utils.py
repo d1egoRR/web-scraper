@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from transformer.Transformer import Transformer
+
+
+class DataTransformer(Transformer):
+
+    def __init__(self):
+        self.keys = [
+            'screen_name', 'name', 'bio_description',
+            'followers', 'avatar_url'
+        ]
+
 
 class DataFormatter(object):
 
