@@ -6,7 +6,6 @@ import requests
 
 from bs4 import BeautifulSoup
 from ConfigParser import SafeConfigParser
-from scraper.models import TwitterProfile
 
 
 class TwitterProfileScraper(object):
@@ -32,7 +31,6 @@ class TwitterProfileScraper(object):
                 result = None
             else:
                 result = self.scrape()
-                result.save()
         else:
             result = None
         return result
@@ -42,12 +40,18 @@ class TwitterProfileScraper(object):
         return len(tags) > 0
 
     def scrape(self):
-        result = TwitterProfile()
-        result.screen_name = self.screen_name
-        result.name = self.get_name()
-        result.bio_description = self.get_bio_description()
-        result.followers = self.get_followers()
-        result.avatar_url = self.get_avatar_url()
+        screen_name = self.screen_name
+        name = self.get_name()
+        bio_description = self.get_bio_description()
+        followers = self.get_followers()
+        avatar_url = self.get_avatar_url()
+        result = dict(
+            screen_name=screen_name,
+            name=name,
+            bio_description=bio_description,
+            followers=followers,
+            avatar_url=avatar_url
+            )
         return result
 
     def get_tags(self, section):

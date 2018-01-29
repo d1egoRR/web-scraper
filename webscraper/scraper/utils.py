@@ -1,40 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from scraper.models import TwitterProfile
-
-
-class Profile(object):
-
-    @staticmethod
-    def get_by_screen_name(screen_name):
-        try:
-            result = TwitterProfile.objects.get(screen_name=screen_name)
-        except TwitterProfile.DoesNotExist:
-            result = None
-        return result
-
-    @staticmethod
-    def get_list():
-        result = list(TwitterProfile.objects.all())
-        return result
-
 
 class DataFormatter(object):
 
     @staticmethod
     def get_data_404_not_found():
-        result = dict(
-            error='not_found',
-            message='Profile does not exists')
+        result = {
+            'error': {
+                'type': 'not_found',
+                'message': 'Profile does not exists'
+            }
+        }
         return result
 
     @classmethod
     def get_format_data(self, data):
-        result = []
+        profiles = []
         for profile in data:
             element = self.get_format_profile(profile)
-            result.append(element)
+            profiles.append(element)
+        result = dict(data=profiles)
         return result
 
     @staticmethod
