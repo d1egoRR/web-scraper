@@ -4,19 +4,22 @@ from __future__ import unicode_literals
 
 class Transformer(object):
 
-    def get_transformed_data(self, data, key_list):
+    def __init__(self, keys):
+        self.keys = keys
+
+    def get_transformed_data(self, data):
         if type(data) == tuple:
-            result = {'data': []}
+            transformed_data = []
             for _object in data:
-                transformed = self.transform_data(_object, key_list)
-                result['data'].append(transformed)
+                transformed = self.transform_data(_object)
+                transformed_data.append(transformed)
         else:
-            transformed = self.transform_data(data, key_list)
-            result = dict(data=transformed)
+            transformed_data = self.transform_data(data)
+        result = dict(data=transformed_data)
         return result
 
-    def transform_data(self, _object, key_list):
+    def transform_data(self, _object):
         result = {}
-        for _key in key_list:
+        for _key in self.keys:
             result[_key] = getattr(_object, _key, '')
         return result

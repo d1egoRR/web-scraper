@@ -1,46 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
+
 from transformer.Transformer import Transformer
 
 
-class DataTransformer(Transformer):
+class ProfileTransformer(Transformer):
 
     def __init__(self):
-        self.keys = [
+        keys = [
             'screen_name', 'name', 'bio_description',
             'followers', 'avatar_url'
         ]
+        self._object = 'Twitter Profile'
+        super(ProfileTransformer, self).__init__(keys)
 
-
-class DataFormatter(object):
-
-    @staticmethod
-    def get_data_404_not_found():
+    def get_data_404(self):
         result = {
             'error': {
-                'type': 'not_found',
-                'message': 'Profile does not exists'
+                'type': settings.NOT_FOUND_ERROR,
+                'message': settings.NOT_FOUND_MESSAGE.format(self._object)
             }
         }
-        return result
-
-    @classmethod
-    def get_format_data(self, data):
-        profiles = []
-        for profile in data:
-            element = self.get_format_profile(profile)
-            profiles.append(element)
-        result = dict(data=profiles)
-        return result
-
-    @staticmethod
-    def get_format_profile(profile):
-        result = dict(
-            screen_name=profile.screen_name,
-            name=profile.name,
-            bio_description=profile.bio_description,
-            followers=profile.followers,
-            avatar_url=profile.avatar_url
-        )
         return result

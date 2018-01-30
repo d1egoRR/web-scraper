@@ -9,29 +9,27 @@ from transformer.Transformer import Transformer
 class TransformerTest(TestCase):
 
     def setUp(self):
-        self.transformer = Transformer()
-        self.key = ['attr1', 'attr2', 'attr3']
+        keys = ['attr1', 'attr2', 'attr3']
+        self.transformer = Transformer(keys)
 
     def test_transform_data(self):
         objects = self.get_objects()
-        result = self.transformer.transform_data(
-            objects[2], self.key)
+        sample3 = objects[2]
+        result = self.transformer.transform_data(sample3)
         self.assertEqual('CC', result['attr1'])
         self.assertEqual(5.88, result['attr2'])
         self.assertFalse(result['attr3'])
 
     def test_get_transformed_data(self):
         objects = self.get_objects()
-        result = self.transformer.get_transformed_data(
-            objects, self.key)
+        result = self.transformer.get_transformed_data(objects)
         self.assertIn('data', result)
         self.assertEqual(3, len(result['data']))
         self.assertEqual('B', result['data'][1]['attr1'])
         self.assertFalse(result['data'][2]['attr3'])
 
         sample1 = objects[0]
-        result = self.transformer.get_transformed_data(
-            sample1, self.key)
+        result = self.transformer.get_transformed_data(sample1)
         self.assertIn('data', result)
         self.assertEqual('a', result['data']['attr1'])
         self.assertEqual('b', result['data']['attr2'])
