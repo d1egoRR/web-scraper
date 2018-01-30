@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'scraper',
-    'transformer',
 ]
 
 MIDDLEWARE = [
@@ -124,4 +123,4 @@ STATIC_URL = '/static/'
 
 # ERRORS HTTP
 NOT_FOUND_ERROR = 'not_found'
-NOT_FOUND_MESSAGE = '{} does not exist'
+NOT_FOUND_MESSAGE = 'Profile does not exist'
