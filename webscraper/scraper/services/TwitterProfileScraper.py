@@ -7,6 +7,9 @@ import requests
 from bs4 import BeautifulSoup
 from ConfigParser import SafeConfigParser
 
+from rest_framework.status import (HTTP_200_OK,
+                                   HTTP_504_GATEWAY_TIMEOUT)
+
 
 class TwitterProfileScraper(object):
 
@@ -15,13 +18,19 @@ class TwitterProfileScraper(object):
         self.parser = SafeConfigParser()
         self.parser.read(
             os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
+        self.connection_status = None
         self.set_soup()
 
     def set_soup(self):
         if self.screen_name:
             url = self.parser.get('config', 'base_url') + self.screen_name
-            response = requests.get(url)
-            self.soup = BeautifulSoup(response.text, 'lxml')
+            try:
+                response = requests.get(url)
+            except requests.ConnectionError:
+                self.connection_status = HTTP_504_GATEWAY_TIMEOUT
+            else:
+                self.soup = BeautifulSoup(response.text, 'lxml')
+                self.connection_status = HTTP_200_OK
         else:
             self.soup = None
 

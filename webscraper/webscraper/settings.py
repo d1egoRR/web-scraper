@@ -124,3 +124,15 @@ STATIC_URL = '/static/'
 # ERRORS HTTP
 NOT_FOUND_ERROR = 'not_found'
 NOT_FOUND_MESSAGE = 'Profile does not exist'
+GATEWAY_TIMEOUT_ERROR = 'gateway_timeout'
+GATEWAY_TIMEOUT_MESSAGE = 'Could not access Twitter to get profiles'
+
+ERROR_404 = {
+    'type': NOT_FOUND_ERROR,
+    'message': NOT_FOUND_MESSAGE
+}
+
+ERROR_504 = {
+    'type': GATEWAY_TIMEOUT_ERROR,
+    'message': GATEWAY_TIMEOUT_MESSAGE
+}
